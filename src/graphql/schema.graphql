@@ -1,0 +1,53 @@
+type Match {
+  id: ID!
+  season: Int!
+  teamA: String!
+  teamB: String!
+  status: MatchStatus!
+  startTime: String!
+  score: Score
+}
+
+type Score {
+  teamA: Int!
+  teamB: Int!
+  overs: Float!
+}
+
+input RecordBallInput {
+  season: Int!
+  matchId: ID!
+  inning: Int!       # 1 or 2
+  over: Int!         # e.g. 0 to 19
+  ball: Int!         # 1 to 6
+  batterId: String!  # Name or ID of batter
+  bowlerId: String!  # Name or ID of bowler
+  runsScored: Int!   # Runs off the bat (0, 1, 4, 6)
+  extras: Int!       # 0 or 1 (Wide/No Ball)
+  isWicket: Boolean!
+}
+
+type BallEventResponse {
+  success: Boolean!
+  message: String
+}
+
+enum MatchStatus {
+  UPCOMING
+  LIVE
+  COMPLETED
+}
+
+type Query {
+  # Added 'season' to make DynamoDB lookup instant (O(1))
+  getMatch(season: Int!, id: ID!): Match
+  listMatches(season: Int!): [Match!]!
+  listMatchesByStatus(season: Int!, status: MatchStatus!): [Match!]!
+}
+
+type Mutation {
+  createMatch(season: Int!, teamA: String!, teamB: String!, startTime: String!): Match!
+  addScore(season: Int!, id: ID!, teamA: Int!, teamB: Int!, overs: Float!): Match!
+  updateMatchStatus(season: Int!, id: ID!, status: MatchStatus!): Match!
+  recordBall(input: RecordBallInput!): BallEventResponse!
+}

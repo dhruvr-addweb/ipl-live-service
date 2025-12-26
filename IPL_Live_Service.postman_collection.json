@@ -1,0 +1,255 @@
+{
+  "info": {
+    "_postman_id": "ipl-live-service-2025",
+    "name": "IPL Live Service - GraphQL API",
+    "description": "Complete GraphQL API collection for IPL Live Service with all queries and mutations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Match Queries",
+      "item": [
+        {
+          "name": "List All Matches by Season",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query listMatches($season: Int!) {\n  listMatches(season: $season) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Fetch all matches for a specific season"
+          }
+        },
+        {
+          "name": "Get Specific Match",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query getMatch($season: Int!, $id: ID!) {\n  getMatch(season: $season, id: $id) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025,\n  \"id\": \"match-1\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Get details of a specific match by ID and season"
+          }
+        },
+        {
+          "name": "List Matches by Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query listMatchesByStatus($season: Int!, $status: MatchStatus!) {\n  listMatchesByStatus(season: $season, status: $status) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025,\n  \"status\": \"UPCOMING\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "List all matches for a season filtered by status (UPCOMING, LIVE, COMPLETED)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Match Mutations",
+      "item": [
+        {
+          "name": "Create New Match",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation createMatch($season: Int!, $teamA: String!, $teamB: String!, $startTime: String!) {\n  createMatch(season: $season, teamA: $teamA, teamB: $teamB, startTime: $startTime) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025,\n  \"teamA\": \"MI\",\n  \"teamB\": \"CSK\",\n  \"startTime\": \"2025-12-30T14:00:00Z\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Create a new match in the system"
+          }
+        },
+        {
+          "name": "Update Match Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation updateMatchStatus($season: Int!, $id: ID!, $status: MatchStatus!) {\n  updateMatchStatus(season: $season, id: $id, status: $status) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025,\n  \"id\": \"match-1\",\n  \"status\": \"LIVE\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Update the status of a match (UPCOMING -> LIVE -> COMPLETED)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Score Management",
+      "item": [
+        {
+          "name": "Add/Update Match Score",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation addScore($season: Int!, $id: ID!, $teamA: Int!, $teamB: Int!, $overs: Float!) {\n  addScore(season: $season, id: $id, teamA: $teamA, teamB: $teamB, overs: $overs) {\n    id\n    season\n    teamA\n    teamB\n    status\n    startTime\n    score {\n      teamA\n      teamB\n      overs\n    }\n  }\n}",
+                "variables": "{\n  \"season\": 2025,\n  \"id\": \"match-1\",\n  \"teamA\": 156,\n  \"teamB\": 142,\n  \"overs\": 19.5\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Update the score of a match. Validates that overs are between 0-20."
+          }
+        },
+        {
+          "name": "Record Ball Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation recordBall($input: RecordBallInput!) {\n  recordBall(input: $input) {\n    success\n    message\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"season\": 2025,\n    \"matchId\": \"match-1\",\n    \"inning\": 1,\n    \"over\": 5,\n    \"ball\": 3,\n    \"batterId\": \"RohitSharma\",\n    \"bowlerId\": \"DeepakChahar\",\n    \"runsScored\": 4,\n    \"extras\": 0,\n    \"isWicket\": false\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "protocol": "https",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            },
+            "description": "Record a ball event during a match. Updates match score, batter stats, and bowler stats in a transaction."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://{{api_id}}.execute-api.{{region}}.amazonaws.com/Prod",
+      "type": "string",
+      "description": "Your API Gateway endpoint - replace {{api_id}} with your API ID and {{region}} with your AWS region (e.g., ap-south-1)"
+    },
+    {
+      "key": "api_id",
+      "value": "your-api-id-here",
+      "type": "string",
+      "description": "Your API Gateway ID"
+    },
+    {
+      "key": "region",
+      "value": "ap-south-1",
+      "type": "string",
+      "description": "AWS region where your API is deployed"
+    }
+  ]
+}

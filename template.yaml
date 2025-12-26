@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: IPL Live GraphQL Service (Monolith Architecture)
+
+Parameters:
+  DeployMarker:
+    Type: String
+    Default: "0"
+    Description: "Force redeploy marker provided by deploy script"
+
+Globals:
+  Function:
+    Runtime: nodejs18.x
+    Timeout: 15
+    MemorySize: 512
+    Environment:
+      Variables:
+        TABLE_NAME: IPL-Matches
+
+Resources:
+  IPLTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: IPL-Matches
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  GraphQLFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: server.handler
+      Description: !Sub "Deployed with marker ${DeployMarker}"
+      Environment:
+        Variables:
+          DEPLOY_MARKER: !Ref DeployMarker
+      Events:
+        GraphQLApi:
+          Type: Api
+          Properties:
+            Path: /graphql
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: IPL-Matches
+
+Outputs:
+  GraphQLApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/graphql"
